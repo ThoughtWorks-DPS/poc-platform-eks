@@ -32,8 +32,11 @@ commands:
     steps:
       - run:
           name: pull kubeconfig
+          working_directory: 
           shell: secrethub run -- /bin/sh -eo pipefail
-          command: SECRETHUB_VAR_ENV=<< parameters.cluster >> sudo secrethub inject -i tpl/kubeconfig.tpl -o ~/.kube/config
+          command: |
+            mkdir ~/.kube
+            SECRETHUB_VAR_ENV=<< parameters.cluster >> secrethub inject -i tpl/kubeconfig.tpl -o ~/.kube/config
       - run:
           name: deploy cluster-autoscaler
           command: bash tpl/deploy_cluster_autoscaler.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq '.aws_region')
