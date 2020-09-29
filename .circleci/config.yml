@@ -26,7 +26,6 @@ commands:
     steps:
       - run:
           name: pull kubeconfig
-          working_directory: 
           shell: secrethub run -- /bin/sh -eo pipefail
           command: |
             mkdir ~/.kube
