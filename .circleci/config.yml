@@ -4,12 +4,6 @@ version: 2.1
 orbs:
   terraform: feedyard/terraform@0.3.0
 
-# executors:
-#   infra-image:
-#     docker:
-#     - image: twdps/circleci-infra-image:stable
-#     shell: secrethub run -- /bin/sh -eo pipefail
-
 on-push-master: &on-push-master
   branches:
     only: /master/
@@ -102,12 +96,49 @@ workflows:
             - approve-sandbox-changes
           filters: *on-push-master
 
-      # - cluster-base-configure:
-      #     name: configure-sandbox
-      #     context: dps-va-di
-      #     cluster: sandbox
-      #     requires:
-      #       - sandbox-change-apply
-      #     filters: *on-push-master
-
       # git tag - release pipeline
+
+      - terraform/plan:
+          name: preview-change-plan
+          context: dps-va-di
+          shell: secrethub run -- /bin/sh -eo pipefail
+          workspace: preview
+          before-terraform:
+            - run:
+                name: generate environmental configuration and credentials from templates
+                command: |
+                  secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+                  secrethub inject -i tpl/preview.auto.tfvars.json.tpl -o preview.auto.tfvars.json
+          filters: *on-tag-master
+
+      - approve-preview-changes:
+          type: approval
+          requires:
+            - preview-change-plan
+          filters: *on-tag-master
+
+      - terraform/apply:
+          name: preview-change-apply
+          context: dps-va-di
+          shell: secrethub run -- /bin/sh -eo pipefail
+          workspace: preview
+          before-terraform:
+            - run:
+                name: generate environmental configuration and credentials from templates
+                command: |
+                  secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+                  secrethub inject -i tpl/preview.auto.tfvars.json.tpl -o preview.auto.tfvars.json
+                  secrethub inject -i tpl/nonprod.test.sh.tpl -o nonprod.test.sh
+          after-terraform:
+            - run:
+                name: test preview account changes
+                environment:
+                  TEST_ENV: preview
+                command: |
+                  secrethub run -- bash nonprod.test.sh preview
+                  secrethub run -- bash tpl/write_cluster_credentials.sh preview
+            - cluster-base-configure:
+                cluster: preview
+          requires:
+            - approve-preview-changes
+          filters: *on-tag-master
