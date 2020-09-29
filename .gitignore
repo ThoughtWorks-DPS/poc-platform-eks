@@ -3,3 +3,4 @@ local.env
 .notes
 sandbox_config
 test_config
+kubeconfig
