@@ -24,6 +24,7 @@ on-tag-master: &on-tag-master
 
 commands:
   cluster-base-configure:
+    shell: secrethub run -- /bin/sh -eo pipefail
     parameters:
       cluster:
         description: cluster name to use for configuration

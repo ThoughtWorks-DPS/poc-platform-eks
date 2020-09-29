@@ -6,6 +6,7 @@
 - Control plane logging default = "api", "audit", "authenticator"
 - Control plan internals (data, secrets, etc) encrypted using generated kms key
 - Uses managed node_groups for worker pools
+- baseline config includes cluster-autoscaler, metrics-server, kube-state-metrics, and AWS container-insights (aggregation)
 - OIDC for service accounts (irsa) is configured and used for cluster-autoscaler, cloud-watch
 - Not configured to support "stateful" applications backed by EBS volumes
 
