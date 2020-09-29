@@ -22,8 +22,9 @@ on-tag-master: &on-tag-master
   tags:
     only: /.*/
 
-commands:
+jobs:
   cluster-base-configure:
+    executor: infra-image
     parameters:
       cluster:
         description: cluster name to use for configuration
@@ -46,6 +47,7 @@ commands:
           name: test pod status for above deployments
           command: |
             secrethub inject -i tpl/cluster_deployments_test.sh.tpl -o cluster_deployments_test.sh
+            bash cluster_deployments_test.sh << parameters.cluster >>
 
 workflows:
   version: 2
@@ -98,10 +100,9 @@ workflows:
       - cluster-base-configure:
           name: configure-sandbox
           context: dps-va-di
-          executor: infra-image
           cluster: sandbox
           requires:
-            - approve-sandbox-changes
+            - sandbox-change-apply
           filters: *on-push-master
 
       # git tag - release pipeline
