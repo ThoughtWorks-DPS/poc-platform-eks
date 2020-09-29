@@ -4,3 +4,4 @@ local.env
 sandbox_config
 test_config
 kubeconfig
+.venv
