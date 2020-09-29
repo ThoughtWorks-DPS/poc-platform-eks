@@ -24,7 +24,6 @@ on-tag-master: &on-tag-master
 
 commands:
   cluster-base-configure:
-    shell: secrethub run -- /bin/sh -eo pipefail
     parameters:
       cluster:
         description: cluster name to use for configuration
@@ -33,6 +32,7 @@ commands:
     steps:
       - run:
           name: pull kubeconfig
+          shell: secrethub run -- /bin/sh -eo pipefail
           command: SECRETHUB_VAR_ENV=<< parameters.cluster >> sudo secrethub inject -i tpl/kubeconfig.tpl -o ~/.kube/config
       - run:
           name: deploy cluster-autoscaler
