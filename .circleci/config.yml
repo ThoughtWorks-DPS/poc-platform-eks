@@ -1,0 +1,107 @@
+---
+version: 2.1
+
+orbs:
+  terraform: feedyard/terraform@0.3.0
+
+executors:
+  infra-image:
+    docker:
+    - image: twdps/circleci-infra-image:stable
+    shell: secrethub run -- /bin/sh -eo pipefail
+
+on-push-master: &on-push-master
+  branches:
+    only: /master/
+  tags:
+    ignore: /.*/
+
+on-tag-master: &on-tag-master
+  branches:
+    ignore: /.*/
+  tags:
+    only: /.*/
+
+commands:
+  cluster-base-configure:
+    parameters:
+      cluster:
+        description: cluster name to use for configuration
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: pull kubeconfig
+          command: SECRETHUB_VAR_ENV=<< parameters.cluster >> secrethub inject -i tpl/kubeconfig.tpl ~/.kube/config
+      - run:
+          name: deploy cluster-autoscaler
+          command: bash tpl/deploy_cluster_autoscaler.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq '.aws_region')
+      - run:
+          name: deploy metrics-apis
+          command: kubectl apply -f metrics-apis --recursive
+      - run:
+          name: deploy containter-insights
+          command: bash tpl/deploy_cloud_watch.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq '.aws_region')
+      - run:
+          name: test pod status for above deployments
+          command: |
+            secrethub inject -i tpl/cluster_deployments_test.sh.tpl -o cluster_deployments_test.sh
+
+workflows:
+  version: 2
+  poc-platform-eks-pipeline:
+
+    jobs:
+      - terraform/plan:
+          name: sandbox-change-plan
+          context: dps-va-di
+          shell: secrethub run -- /bin/sh -eo pipefail
+          workspace: sandbox
+          before-terraform:
+            - run:
+                name: generate environmental configuration and credentials from templates
+                command: |
+                  secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+                  secrethub inject -i tpl/sandbox.auto.tfvars.json.tpl -o sandbox.auto.tfvars.json
+          filters: *on-push-master
+
+      - approve-sandbox-changes:
+          type: approval
+          requires:
+            - sandbox-change-plan
+          filters: *on-push-master
+
+      - terraform/apply:
+          name: sandbox-change-apply
+          context: dps-va-di
+          shell: secrethub run -- /bin/sh -eo pipefail
+          workspace: sandbox
+          before-terraform:
+            - run:
+                name: generate environmental configuration and credentials from templates
+                command: |
+                  secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+                  secrethub inject -i tpl/sandbox.auto.tfvars.json.tpl -o sandbox.auto.tfvars.json
+                  secrethub inject -i tpl/nonprod.test.sh.tpl -o nonprod.test.sh
+          after-terraform:
+            - run:
+                name: test sandbox account changes
+                environment:
+                  TEST_ENV: sandbox
+                command: |
+                  secrethub run -- bash nonprod.test.sh sandbox
+                  secrethub run -- bash tpl/write_cluster_credentials.sh sandbox
+          requires:
+            - approve-sandbox-changes
+          filters: *on-push-master
+
+      - cluster-base-configure:
+          name: configure-sandbox
+          context: dps-va-di
+          executor: infra-image
+          cluster: sandbox
+          requires:
+            - approve-sandbox-changes
+          filters: *on-push-master
+
+      # git tag - release pipeline
