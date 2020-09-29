@@ -62,3 +62,5 @@ kubectl apply -f container-insights/cloudwatch-namespace.yaml
 kubectl apply -f container-insights/cloudwatch/ --recursive
 kubectl apply -f container-insights/fluentd/ --recursive
 
+# fluentd takes a few seconds to get to a ready state
+sleep 10

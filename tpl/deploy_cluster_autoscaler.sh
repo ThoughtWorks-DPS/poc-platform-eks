@@ -25,8 +25,9 @@ extraArgs:
 EOF
 
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm install cluster-autoscaler stable/cluster-autoscaler --namespace kube-system --values=cluster-autoscaler-chart-values.yaml
-# helm template cluster-autoscaler stable/cluster-autoscaler --namespace kube-system  --values=cluster-autoscaler-chart-values.yaml
+# helm install cluster-autoscaler stable/cluster-autoscaler --namespace kube-system --values=cluster-autoscaler-chart-values.yaml
+helm template cluster-autoscaler stable/cluster-autoscaler --namespace kube-system  --values=cluster-autoscaler-chart-values.yaml > cluster-autoscaler-deployment.yaml
+kubectl apply -f cluster-autoscaler-deployment.yaml
 
 
 
