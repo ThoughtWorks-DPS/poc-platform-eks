@@ -1,11 +1,12 @@
 locals {
   k8s_cluster_autoscaler_namespace             = "kube-system"
-  k8s_cluster_autoscaler_service_account_name  = "cluster-autoscaler-aws-cluster-autoscaler"
+  k8s_cluster_autoscaler_service_account_name  = "${var.cluster_name}-aws-cluster-autoscaler"
 
   k8s_cloud_watch_agents_account_namespace     = "amazon-cloudwatch"
-  k8s_cloud_watch_agents_service_account_name  = "cloudwatch-agent"
+  k8s_cloud_watch_agents_service_account_name  = "${var.cluster_name}-cloudwatch-agent"
 }
 
+# cluster-autoscaler
 module "iam_assumable_role_admin" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = ">= v2.21.0"
@@ -19,13 +20,13 @@ module "iam_assumable_role_admin" {
 
 resource "aws_iam_policy" "cluster_autoscaler" {
   name_prefix = "${var.cluster_name}-cluster-autoscaler"
-  description = "EKS cluster-autoscaler policy for ${var.cluster_name} cluster"
+  description = "EKS cluster-autoscaler policy for the ${var.cluster_name} cluster"
   policy      = data.aws_iam_policy_document.cluster_autoscaler.json
 }
 
 data "aws_iam_policy_document" "cluster_autoscaler" {
   statement {
-    sid    = "${var.cluster_name}clusterAutoscalerAll"
+    sid    = "${var.cluster_name}ClusterAutoscalerAll"
     effect = "Allow"
 
     actions = [
@@ -40,7 +41,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
   }
 
   statement {
-    sid    = "${var.cluster_name}clusterAutoscalerOwn"
+    sid    = "${var.cluster_name}ClusterAutoscalerOwn"
     effect = "Allow"
 
     actions = [
@@ -65,8 +66,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
   }
 }
 
-
-
+#cloudwatch-agents
 module "iam_assumable_role_cloudwatch" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = ">= v2.21.0"
@@ -80,7 +80,7 @@ module "iam_assumable_role_cloudwatch" {
 
 resource "aws_iam_policy" "cloud_watch" {
   name_prefix = "${var.cluster_name}-cloud-watch"
-  description = "EKS cloud_watch policy for ${var.cluster_name} cluster"
+  description = "EKS cloud_watch policy for the ${var.cluster_name} cluster"
   policy      = data.aws_iam_policy_document.cloud_watch.json
 }
 

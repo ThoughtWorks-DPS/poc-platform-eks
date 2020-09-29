@@ -46,8 +46,6 @@ metadata:
 EOF
 
 cat  <<EOF > container-insights/fluentd/fluentd-configmap.yaml
-# create configmap for cluster name and aws region for CloudWatch Logs
-# need to replace the placeholders {{cluster_name}} and {{region_name}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -63,4 +61,4 @@ kubectl apply -f container-insights/cloudwatch/ --recursive
 kubectl apply -f container-insights/fluentd/ --recursive
 
 # fluentd takes a few seconds to get to a ready state
-sleep 10
+sleep 15
