@@ -48,8 +48,8 @@ commands:
 
 workflows:
   version: 2
-  poc-platform-eks-pipeline:
 
+  poc-platform-eks-pipeline:
     jobs:
       - terraform/plan:
           name: sandbox-change-plan
@@ -97,7 +97,6 @@ workflows:
           filters: *on-push-master
 
       # git tag - release pipeline
-
       - terraform/plan:
           name: preview-change-plan
           context: dps-va-di
@@ -142,3 +141,51 @@ workflows:
           requires:
             - approve-preview-changes
           filters: *on-tag-master
+
+  poc-platform-eks-teardown:
+    jobs:
+      - teardown-clusters:
+          type: approval
+          filters: *on-push-master
+
+      - approve-teardown-sandbox:
+          type: approval
+          requires:
+            - teardown-clusters
+          filters: *on-push-master
+      
+      - approve-teardown-preview:
+          type: approval
+          requires:
+            - teardown-clusters
+          filters: *on-push-master
+
+      - terraform/destroy:
+          name: sandbox-destroy
+          context: dps-va-di
+          shell: secrethub run -- /bin/sh -eo pipefail
+          workspace: sandbox
+          before-terraform:
+            - run:
+                name: generate environmental configuration and credentials from templates
+                command: |
+                  secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+                  secrethub inject -i tpl/sandbox.auto.tfvars.json.tpl -o sandbox.auto.tfvars.json
+          requires:
+            - approve-teardown-sandbox
+          filters: *on-push-master
+
+      - terraform/destroy:
+          name: preview-destroy
+          context: dps-va-di
+          shell: secrethub run -- /bin/sh -eo pipefail
+          workspace: preview
+          before-terraform:
+            - run:
+                name: generate environmental configuration and credentials from templates
+                command: |
+                  secrethub inject -i tpl/terraformrc.tpl -o ~/.terraformrc
+                  secrethub inject -i tpl/preview.auto.tfvars.json.tpl -o preview.auto.tfvars.json
+          requires:
+            - approve-teardown-preview
+          filters: *on-push-master
