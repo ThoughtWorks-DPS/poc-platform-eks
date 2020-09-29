@@ -93,8 +93,6 @@ workflows:
                   secrethub run -- bash nonprod.test.sh sandbox
                   secrethub run -- bash tpl/write_cluster_credentials.sh sandbox
             - cluster-base-configure:
-                name: configure-sandbox
-                context: dps-va-di
                 cluster: sandbox
           requires:
             - approve-sandbox-changes
