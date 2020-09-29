@@ -39,13 +39,13 @@ commands:
             SECRETHUB_VAR_ENV=<< parameters.cluster >> secrethub inject -i tpl/kubeconfig.tpl -o ~/.kube/config
       - run:
           name: deploy cluster-autoscaler
-          command: bash tpl/deploy_cluster_autoscaler.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq '.aws_region')
+          command: bash tpl/deploy_cluster_autoscaler.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq -r '.aws_region')
       - run:
           name: deploy metrics-apis
           command: kubectl apply -f metrics-apis --recursive
       - run:
           name: deploy containter-insights
-          command: bash tpl/deploy_cloud_watch.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq '.aws_region')
+          command: bash tpl/deploy_cloud_watch.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq -r '.aws_region')
       - run:
           name: test pod status for above deployments
           command: |
