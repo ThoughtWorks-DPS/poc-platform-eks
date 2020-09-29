@@ -4,11 +4,11 @@ version: 2.1
 orbs:
   terraform: feedyard/terraform@0.3.0
 
-executors:
-  infra-image:
-    docker:
-    - image: twdps/circleci-infra-image:stable
-    shell: secrethub run -- /bin/sh -eo pipefail
+# executors:
+#   infra-image:
+#     docker:
+#     - image: twdps/circleci-infra-image:stable
+#     shell: secrethub run -- /bin/sh -eo pipefail
 
 on-push-master: &on-push-master
   branches:
@@ -22,9 +22,8 @@ on-tag-master: &on-tag-master
   tags:
     only: /.*/
 
-jobs:
+commands:
   cluster-base-configure:
-    executor: infra-image
     parameters:
       cluster:
         description: cluster name to use for configuration
@@ -93,16 +92,20 @@ workflows:
                 command: |
                   secrethub run -- bash nonprod.test.sh sandbox
                   secrethub run -- bash tpl/write_cluster_credentials.sh sandbox
+            - cluster-base-configure:
+                name: configure-sandbox
+                context: dps-va-di
+                cluster: sandbox
           requires:
             - approve-sandbox-changes
           filters: *on-push-master
 
-      - cluster-base-configure:
-          name: configure-sandbox
-          context: dps-va-di
-          cluster: sandbox
-          requires:
-            - sandbox-change-apply
-          filters: *on-push-master
+      # - cluster-base-configure:
+      #     name: configure-sandbox
+      #     context: dps-va-di
+      #     cluster: sandbox
+      #     requires:
+      #       - sandbox-change-apply
+      #     filters: *on-push-master
 
       # git tag - release pipeline

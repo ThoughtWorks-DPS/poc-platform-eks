@@ -2,14 +2,20 @@
 
 ## current configuration
 
-- Uses EKS latest k8s version (1.17.3)
+- Uses EKS latest k8s version (1.17)
 - Control plane logging default = "api", "audit", "authenticator"
 - Control plan internals (data, secrets, etc) encrypted using generated kms key
 - Uses managed node_groups for worker pools
 - OIDC for service accounts (irsa) is configured and used for cluster-autoscaler, cloud-watch
 - Not configured to support "stateful" applications backed by EBS volumes
 
-# TODO
+
+# NEED TODO
+
+- deploy [External-DNS](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md)
+
+
+# Probably don't need to do for poc
 
 - not forwarding kube-state-metrics to container-insights, probably not necessary for poc
 
