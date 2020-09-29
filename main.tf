@@ -28,7 +28,7 @@ module "eks" {
       disk_size        = var.node_group_a_disk_size
       instance_type    = var.node_group_a_instance_type
       k8s_labels = {
-        Environment = var.cluster_name
+        Environment = "${var.cluster_name}"
       }
       additional_tags = {
         "cluster" = "${var.cluster_name}"
