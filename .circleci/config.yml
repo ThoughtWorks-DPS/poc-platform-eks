@@ -44,6 +44,9 @@ commands:
           command: |
             secrethub inject -i tpl/cluster_deployments_test.sh.tpl -o cluster_deployments_test.sh
             bash cluster_deployments_test.sh << parameters.cluster >>
+      - run:
+          name: cis benchmarks
+          command: 
 
 workflows:
   version: 2
