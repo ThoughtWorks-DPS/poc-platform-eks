@@ -40,7 +40,7 @@ commands:
           name: deploy containter-insights
           command: bash tpl/deploy_cloud_watch.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq -r '.aws_region')
       - run:
-          name: test pod status for above deployments
+          name: validate pod status for cluster-autoscaler and metrics api deployments
           command: |
             secrethub inject -i tpl/cluster_deployments_test.sh.tpl -o cluster_deployments_test.sh
             bash cluster_deployments_test.sh << parameters.cluster >>
