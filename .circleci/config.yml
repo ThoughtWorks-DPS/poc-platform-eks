@@ -46,7 +46,7 @@ commands:
             bash cluster_deployments_test.sh << parameters.cluster >>
       - run:
           name: cis benchmarks
-          command: 
+          command: bash tpl/kube_bench.sh
 
 workflows:
   version: 2
