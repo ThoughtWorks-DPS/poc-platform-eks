@@ -86,6 +86,7 @@ workflows:
                 name: test sandbox account changes
                 environment:
                   TEST_ENV: sandbox
+                  KUBECONFIG: kubeconfig
                 command: |
                   secrethub run -- bash nonprod.test.sh sandbox
                   secrethub run -- bash tpl/write_cluster_credentials.sh sandbox
