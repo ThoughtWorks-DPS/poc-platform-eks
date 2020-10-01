@@ -25,4 +25,3 @@ Given poc, limited configuration testing to the basics. operational deployment w
 - test metrics-server and kube-state-metrics for actual outputs and test aggregation for presence of the metrics
 - test aws container-insight aggregation for results
 - test cluster-autoscaler response to load
-
