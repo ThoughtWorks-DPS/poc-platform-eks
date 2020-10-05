@@ -32,7 +32,7 @@ metadata:
   name: cloudwatch-agent-role-binding
 subjects:
   - kind: ServiceAccount
-    name: cloudwatch-agent
+    name: sandbox-cloudwatch-agent
     namespace: amazon-cloudwatch
 roleRef:
   kind: ClusterRole

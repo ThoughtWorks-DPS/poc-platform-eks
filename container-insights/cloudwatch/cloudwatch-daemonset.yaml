@@ -82,4 +82,4 @@ spec:
           hostPath:
             path: /dev/disk/
       terminationGracePeriodSeconds: 60
-      serviceAccountName: cloudwatch-agent
+      serviceAccountName: sandbox-cloudwatch-agent
