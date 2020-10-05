@@ -1,18 +1,11 @@
-#!/usr/bin/env bash
-
-export AWS_ACCOUNT_ID=$(secrethub read vapoc/platform/svc/aws/aws-account-id)
-export AWS_DEFAULT_REGION=${2}
-
-# container-insights deployment files
-cat <<EOF > container-insights-daemonset.yaml
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: ${1}-cloudwatch-agent
+  name: sandbox-cloudwatch-agent
   namespace: amazon-cloudwatch
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::${AWS_ACCOUNT_ID}:role/${1}-cloudwatch-agent
+    eks.amazonaws.com/role-arn: arn:aws:iam::437518843863:role/sandbox-cloudwatch-agent
 
 ---
 apiVersion: apps/v1
@@ -98,7 +91,7 @@ spec:
           hostPath:
             path: /dev/disk/
       terminationGracePeriodSeconds: 60
-      serviceAccountName: ${1}-cloudwatch-agent
+      serviceAccountName: sandbox-cloudwatch-agent
 
 ---
 kind: ClusterRole
@@ -133,7 +126,7 @@ metadata:
   name: cloudwatch-agent-role-binding
 subjects:
   - kind: ServiceAccount
-    name: ${1}-cloudwatch-agent
+    name: sandbox-cloudwatch-agent
     namespace: amazon-cloudwatch
 roleRef:
   kind: ClusterRole
@@ -157,7 +150,7 @@ spec:
       annotations:
         configHash: 8915de4cf9c3551a8dc74c0137a3e83569d28c71044b0359c2578d2e0461825
     spec:
-      serviceAccountName: ${1}-cloudwatch-agent
+      serviceAccountName: sandbox-cloudwatch-agent
       terminationGracePeriodSeconds: 30
       # Because the image's entrypoint requires to write on /fluentd/etc but we mount configmap there which is read-only,
       # this initContainers workaround or other is needed.
@@ -244,7 +237,7 @@ data:
       "logs": {
         "metrics_collected": {
           "kubernetes": {
-            "cluster_name": "${1}",
+            "cluster_name": "sandbox",
             "metrics_collection_interval": 20
           }
         },
@@ -281,7 +274,7 @@ data:
       @type null
     </match>
   containers.conf: |
-        <source>
+    <source>
       @type tail
       @id in_tail_container_logs
       @label @containers
@@ -585,13 +578,6 @@ metadata:
   name: cluster-info
   namespace: amazon-cloudwatch
 data:
-  cluster.name: ${1}
-  logs.region: ${2}
+  cluster.name: sandbox
+  logs.region: us-west-2
 
-EOF
-
-kubectl apply -f cloudwatch-namespace.yaml
-kubectl apply -f container-insights-daemonset.yaml
-
-# fluentd takes a few seconds to get to a ready state
-sleep 15
