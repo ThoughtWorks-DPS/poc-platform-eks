@@ -1,4 +1,8 @@
 #!/usr/bin/env bats
+@test "evaluate external-dns status" {
+  run bash -c "kubectl get po -n kube-system -o wide | grep 'external-dns'"
+  [[ "${output}" =~ "Running" ]]
+}
 
 @test "evaluate cluster-autoscaler status" {
   run bash -c "kubectl get po -n kube-system -o wide | grep 'cluster-autoscaler'"

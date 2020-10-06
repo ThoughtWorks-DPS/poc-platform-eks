@@ -281,7 +281,7 @@ data:
       @type null
     </match>
   containers.conf: |
-        <source>
+    <source>
       @type tail
       @id in_tail_container_logs
       @label @containers
