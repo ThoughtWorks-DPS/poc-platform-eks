@@ -96,8 +96,8 @@ workflows:
                 command: |
                   secrethub run -- bash nonprod.test.sh sandbox
                   secrethub run -- bash tpl/write_cluster_credentials.sh sandbox
-            # - cluster-base-configure:
-            #     cluster: sandbox
+            - cluster-base-configure:
+                cluster: sandbox
           requires:
             - approve-sandbox-changes
           filters: *on-push-master
