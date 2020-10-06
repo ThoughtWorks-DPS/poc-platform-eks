@@ -42,8 +42,25 @@ module "eks" {
   wait_for_cluster_cmd = "until curl -k -s $ENDPOINT/healthz >/dev/null; do sleep 4; done"
 }
 
+resource "aws_route53_zone" "cluster_subdomain_zone" {
+  name = "${var.cluster_name}.${var.domain}"
+  tags = {
+    cluster     = var.cluster_name
+    cluster_domain   = "${var.cluster_name}.${var.domain}"
+    pipeline    = "poc-platform-eks"
+  }
+}
+resource "aws_route53_record" "cluster_subdomain_zone_ns" {
+  zone_id = data.aws_route53_zone.top_level_domain.zone_id
+  name    = "${var.cluster_name}.${var.domain}"
+  type    = "NS"
+  ttl     = "30"
+  records = aws_route53_zone.cluster_subdomain_zone.name_servers
+}
+
 resource "aws_kms_key" "cluster_encyption_key" {
   description = "Encryption key for kubernetes-secrets envelope encryption"
   enable_key_rotation = true
   deletion_window_in_days = 7
 }
+

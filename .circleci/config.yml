@@ -31,6 +31,9 @@ commands:
             mkdir ~/.kube
             SECRETHUB_VAR_ENV=<< parameters.cluster >> secrethub inject -i tpl/kubeconfig.tpl -o ~/.kube/config
       - run:
+          name: deploy external-dns
+          command: bash tpl/deploy_external_dns.sh sandbox
+      - run:
           name: deploy cluster-autoscaler
           command: bash tpl/deploy_cluster_autoscaler.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq -r '.aws_region')
       - run:
@@ -93,8 +96,8 @@ workflows:
                 command: |
                   secrethub run -- bash nonprod.test.sh sandbox
                   secrethub run -- bash tpl/write_cluster_credentials.sh sandbox
-            - cluster-base-configure:
-                cluster: sandbox
+            # - cluster-base-configure:
+            #     cluster: sandbox
           requires:
             - approve-sandbox-changes
           filters: *on-push-master

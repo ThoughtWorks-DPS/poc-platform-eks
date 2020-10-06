@@ -39,6 +39,7 @@ variable "assume_role" {}
 
 variable "cluster_name" {}
 variable "cluster_version" {}
+variable "domain" {}
 variable "cluster_enabled_log_types" {
   default = ["api", "audit", "authenticator"]
 }
