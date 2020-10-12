@@ -1,0 +1,14 @@
+# create amazon-cloudwatch namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: di-qa
+  labels:
+    name: di-qa
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: di-staging
+  labels:
+    name: di-staging
