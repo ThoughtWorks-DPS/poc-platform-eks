@@ -28,3 +28,11 @@
   run bash -c "kubectl get po -n amazon-cloudwatch -o wide | grep 'fluentd'"
   [[ "${output}" =~ "Running" ]]
 }
+
+# @test "evaluate namespace status" {
+#   run bash -c "kubectl get namespace | grep 'di-qa'"
+#   [[ "${output}" =~ "Active" ]]
+
+#   run bash -c "kubectl get namespace | grep 'di-staging'"
+#   [[ "${output}" =~ "Active" ]]
+# }
