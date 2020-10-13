@@ -11,6 +11,12 @@
 - Not configured to support "stateful" applications backed by EBS volumes
 
 
+## Run bats test
+```sh
+brew install bats
+bats test 
+```
+
 # NEED TODO
 
 - deploy [External-DNS](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md)
