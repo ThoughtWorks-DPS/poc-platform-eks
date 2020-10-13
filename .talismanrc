@@ -1,0 +1,3 @@
+fileignoreconfig:
+- filename: environment_namespace.yaml
+  checksum: 48a4245c1698e60e7656ae4ef3002decc0e8a6fa99713b7af0aab3e7592750b3

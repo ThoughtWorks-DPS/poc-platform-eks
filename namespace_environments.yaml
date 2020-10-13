@@ -1,4 +1,4 @@
-# create amazon-cloudwatch namespace
+# create kubernetes namespaces
 apiVersion: v1
 kind: Namespace
 metadata:
