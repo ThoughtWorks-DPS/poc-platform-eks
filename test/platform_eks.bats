@@ -29,10 +29,10 @@
   [[ "${output}" =~ "Running" ]]
 }
 
-# @test "evaluate namespace status" {
-#   run bash -c "kubectl get namespace | grep 'di-qa'"
-#   [[ "${output}" =~ "Active" ]]
+@test "evaluate namespace status" {
+  run bash -c "kubectl get namespace | grep 'di-qa'"
+  [[ "${output}" =~ "Active" ]]
 
-#   run bash -c "kubectl get namespace | grep 'di-staging'"
-#   [[ "${output}" =~ "Active" ]]
-# }
+  run bash -c "kubectl get namespace | grep 'di-staging'"
+  [[ "${output}" =~ "Active" ]]
+}
