@@ -14,7 +14,7 @@
 ## Run bats test
 ```sh
 brew install bats
-aws-vault exec vapoc.admin bats test 
+aws-vault exec vapoc.admin bats test
 ```
 
 # NEED TODO
