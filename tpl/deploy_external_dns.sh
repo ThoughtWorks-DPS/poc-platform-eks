@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 export AWS_ACCOUNT_ID=$(secrethub read vapoc/platform/svc/aws/aws-account-id)
+export HOSTED_ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name "${1}.devportal.name" | jq -r '.HostedZones[].Id')
 
 # external-dns deployment files
 cat <<EOF > external-dns-deployment.yaml
