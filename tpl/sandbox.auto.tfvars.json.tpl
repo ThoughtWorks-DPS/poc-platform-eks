@@ -5,7 +5,7 @@
 
     "cluster_name": "sandbox",
     "domain": "devportal.name",
-    "cluster_version": "1.17",
+    "cluster_version": "1.18",
     "node_group_a_desired_capacity": "1",
     "node_group_a_max_capacity": "3",
     "node_group_a_min_capacity": "1",

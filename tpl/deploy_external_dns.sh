@@ -64,7 +64,7 @@ spec:
       serviceAccountName: ${1}-external-dns
       containers:
       - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:v0.7.3
+        image: k8s.gcr.io/external-dns/external-dns:v0.7.4
         args:
         - --source=service
         - --source=ingress
