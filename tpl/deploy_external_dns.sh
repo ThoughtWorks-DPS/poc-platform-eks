@@ -76,7 +76,7 @@ spec:
         # - --policy=upsert-only # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
         - --aws-zone-type=public # only look at public hosted zones (valid values are public, private or no value for both)
         - --registry=txt
-        - --txt-owner-id=/hostedzone/Z0074007C69Y7PDWFLE0
+        - --txt-owner-id=/hostedzone/Z02471992ZS1AUJJK2MLC
       securityContext:
         fsGroup: 65534 # For ExternalDNS to be able to read Kubernetes and AWS token files
 EOF
