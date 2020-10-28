@@ -29,6 +29,9 @@ rules:
 - apiGroups: [""]
   resources: ["nodes"]
   verbs: ["list","watch"]
+- apiGroups: ["networking.istio.io"]
+  resources: ["gateways", "virtualservices"]
+  verbs: ["get","watch","list"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
