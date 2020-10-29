@@ -25,7 +25,7 @@
 }
 
 @test "evaluate namespace status" {
-  run bash -c "kubectl get namespace | grep 'di-qa'"
+  run bash -c "kubectl get namespace | grep 'di-dev'"
   [[ "${output}" =~ "Active" ]]
 
   run bash -c "kubectl get namespace | grep 'di-staging'"
