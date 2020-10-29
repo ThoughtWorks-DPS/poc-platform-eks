@@ -17,11 +17,6 @@ brew install bats
 aws-vault exec vapoc.admin bats test
 ```
 
-# NEED TODO
-
-- deploy [External-DNS](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md)
-
-
 # Probably don't need to do for poc
 
 - not forwarding kube-state-metrics to container-insights, probably not necessary for poc
