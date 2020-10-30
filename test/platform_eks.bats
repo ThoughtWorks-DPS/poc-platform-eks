@@ -31,3 +31,8 @@
   run bash -c "kubectl get namespace | grep 'di-staging'"
   [[ "${output}" =~ "Active" ]]
 }
+
+@test "evaluate cluster secrets" {
+  run bash -c "kubectl get secrets | grep 'github-package-cred'"
+  [[ "${output}" =~ "kubernetes.io/dockerconfigjson" ]]
+}

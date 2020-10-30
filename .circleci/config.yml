@@ -41,7 +41,10 @@ commands:
           command: bash tpl/deploy_cloud_watch.sh << parameters.cluster >> $(cat << parameters.cluster >>.auto.tfvars.json | jq -r '.aws_region')
       - run:
           name: create environment namespace
-          command: kubectl apply -f namespace_environments.yaml 
+          command: kubectl apply -f namespace_environments.yaml
+      - run:
+          name: create cluster secrets
+          command: bash tpl/create_cluster_secrets.sh
       - run:
           name: validate pod status for cluster-autoscaler and metrics api deployments
           command: |
