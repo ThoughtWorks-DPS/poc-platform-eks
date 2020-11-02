@@ -3,7 +3,19 @@
 export GITHUB_USER=$(secrethub read vapoc/platform/svc/github/username)
 export GITHUB_TOKEN=$(secrethub read vapoc/platform/svc/github/access-token)
 
-kubectl create secret docker-registry github-package-cred \
-  --docker-server=https://docker.pkg.github.com \
-  --docker-username=$GITHUB_USER \
-  --docker-password=$GITHUB_TOKEN
+export username=$(echo $GITHUB_USER | base64)
+export password=$(echo $GITHUB_TOKEN | base64)
+
+cat << EOF > kube-secrets.yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-packages-secret
+data:
+  username: ${username}
+  password: ${password}
+EOF
+
+kubectl apply -f kube-secrets.yaml -n di-dev
+kubectl apply -f kube-secrets.yaml -n di-staging
