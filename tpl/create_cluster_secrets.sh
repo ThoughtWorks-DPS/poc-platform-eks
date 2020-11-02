@@ -1,20 +1,14 @@
 #!/usr/bin/env bash
 
-export GITHUB_USER=$(secrethub read vapoc/platform/svc/github/username)
-export GITHUB_TOKEN=$(secrethub read vapoc/platform/svc/github/access-token)
-
-export username=$(echo $GITHUB_USER | base64)
-export password=$(echo $GITHUB_TOKEN | base64)
-
 cat << EOF > kube-secrets.yaml
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: github-packages-secret
+ name: github-packages-secret
 data:
-  username: ${username}
-  password: ${password}
+ .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2RvY2tlci5wa2cuZ2l0aHViLmNvbSI6eyJ1c2VybmFtZSI6InR3ZHBzLmlvIiwicGFzc3dvcmQiOiJkYjg1ZjY0YjcyZGIxZWUxZTk4YjRkNmUwNTA4NjNkYWVmMTc2ZGUzIiwiYXV0aCI6ImRIZGtjSE11YVc4NlpHSTROV1kyTkdJM01tUmlNV1ZsTVdVNU9HSTBaRFpsTURVd09EWXpaR0ZsWmpFM05tUmxNdz09In19fQ==
+type: kubernetes.io/dockerconfigjson
 EOF
 
 kubectl apply -f kube-secrets.yaml -n di-dev

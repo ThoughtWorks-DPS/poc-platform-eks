@@ -34,10 +34,10 @@
 
 @test "evaluate cluster secrets in di-dev" {
   run bash -c "kubectl get secrets -n di-dev | grep 'github-packages-secret'"
-  [[ "${output}" =~ "Opaque" ]]
+  [[ "${output}" =~ "kubernetes.io/dockerconfigjson" ]]
 }
 
 @test "evaluate cluster secrets in di-staging" {
   run bash -c "kubectl get secrets -n di-staging | grep 'github-packages-secret'"
-  [[ "${output}" =~ "Opaque" ]]
+  [[ "${output}" =~ "kubernetes.io/dockerconfigjson" ]]
 }
