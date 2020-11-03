@@ -5,3 +5,4 @@ sandbox_config
 test_config
 kubeconfig
 .venv
+.idea/
