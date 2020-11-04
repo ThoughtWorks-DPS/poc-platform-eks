@@ -24,12 +24,24 @@
   [[ "${output}" =~ "Running" ]]
 }
 
-@test "evaluate namespace status" {
+@test "evaluate di-dev namespace status" {
   run bash -c "kubectl get namespace | grep 'di-dev'"
   [[ "${output}" =~ "Active" ]]
+}
 
+@test "evaluate di-dev namespace status" {
   run bash -c "kubectl get namespace | grep 'di-staging'"
   [[ "${output}" =~ "Active" ]]
+}
+
+@test "evaluate di-dev namespace istio-injection" {
+    run bash -c "kubectl get namespaces --show-labels | grep 'di-dev'"
+    [[ "${output}" =~ "istio-injection=enabled" ]]
+}
+
+@test "evaluate di-staging namespace istio-injection" {
+    run bash -c "kubectl get namespaces --show-labels | grep 'di-staging'"
+    [[ "${output}" =~ "istio-injection=enabled" ]]
 }
 
 @test "evaluate cluster secrets in di-dev" {
