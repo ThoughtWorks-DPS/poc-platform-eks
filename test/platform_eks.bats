@@ -29,7 +29,7 @@
   [[ "${output}" =~ "Active" ]]
 }
 
-@test "evaluate di-dev namespace status" {
+@test "evaluate di-staging namespace status" {
   run bash -c "kubectl get namespace | grep 'di-staging'"
   [[ "${output}" =~ "Active" ]]
 }
