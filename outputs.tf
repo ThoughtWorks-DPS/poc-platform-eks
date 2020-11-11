@@ -26,3 +26,7 @@ output "node_groups" {
 output "test" {
   value = data.aws_subnet_ids.private
 }
+
+output "eks_cluster_oidc_issuer_url" {
+  value = module.eks.cluster_oidc_issuer_url
+}
