@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 
-cat << EOF > kube-secrets.yaml
----
-apiVersion: v1
-kind: Secret
-metadata:
- name: github-packages-secret
-data:
- .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2RvY2tlci5wa2cuZ2l0aHViLmNvbSI6eyJ1c2VybmFtZSI6InR3ZHBzLmlvIiwicGFzc3dvcmQiOiJkYjg1ZjY0YjcyZGIxZWUxZTk4YjRkNmUwNTA4NjNkYWVmMTc2ZGUzIiwiYXV0aCI6ImRIZGtjSE11YVc4NlpHSTROV1kyTkdJM01tUmlNV1ZsTVdVNU9HSTBaRFpsTURVd09EWXpaR0ZsWmpFM05tUmxNdz09In19fQ==
-type: kubernetes.io/dockerconfigjson
-EOF
+GITHUB_USERNAME=$(secrethub read vapoc/platform/svc/github/username)
+GITHUB_TOKEN=$(secrethub read vapoc/platform/svc/github/access-token)
+EMAIL=$(secrethub read vapoc/platform/svc/gmail/username)
 
-kubectl apply -f kube-secrets.yaml -n di-dev
-kubectl apply -f kube-secrets.yaml -n di-staging
+kubectl create secret docker-registry github-packages-secret --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_TOKEN --docker-email=$EMAIL --docker-server=docker.pkg.github.com -n di-dev --dry-run=client -o yaml > dev-secret.yaml
+kubectl apply -f dev-secret.yaml
+
+kubectl create secret docker-registry github-packages-secret --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_TOKEN --docker-email=$EMAIL --docker-server=docker.pkg.github.com -n di-staging --dry-run=client -o yaml > staging-secret.yaml
+kubectl apply -f staging-secret.yaml
