@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 0.13.3"
+  required_version = "~> 0.14.4"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -49,4 +49,3 @@ variable "node_group_a_max_capacity" {}
 variable "node_group_a_min_capacity" {}
 variable "node_group_a_disk_size" {}
 variable "node_group_a_instance_type" {}
-
