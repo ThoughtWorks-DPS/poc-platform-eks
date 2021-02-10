@@ -1,7 +1,6 @@
 # poc-platform-eks
 
 ## current configuration
-
 - Uses EKS latest k8s version (1.17)
 - Control plane logging default = "api", "audit", "authenticator"
 - Control plan internals (data, secrets, etc) encrypted using generated kms key
