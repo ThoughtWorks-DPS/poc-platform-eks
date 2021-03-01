@@ -22,3 +22,4 @@ users:
 EOF
 cat kubeconfig_context.tpl kubeconfig_token.tpl > kubeconfig
 cat kubeconfig | secrethub write vapoc/platform/env/${1}/cluster/kubeconfig
+cat kubeconfig | chamber write lhdi/platform/env/${1}/cluster kubeconfig -
