@@ -1,3 +1,11 @@
+<div align="center">
+	<p>
+		<img alt="CircleCI Logo" src="https://github.com/ThoughtWorks-DPS/lab-documentation/blob/master/doc/img/dps.png?sanitize=true" width="75" />
+	</p>
+  <h5>archived</h5>
+</div>
+<br />
+
 # poc-platform-eks
 
 ## current configuration
